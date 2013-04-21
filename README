@@ -4,7 +4,13 @@ The following steps are to be used:
 1. Segment images to remove earth, filter to get brightest stars, and generate star-trail images from the results
 2. Extract length of star-trails
 3. Calculate direction of camera from the length of the star-trails
-4. Segment original image using level sets (level set implementation done by Jeff Orachard), in order to get the aurora
+4. Segment original image in order to get the aurora
 5. Calculate where on earth the aurora is above
 6. Show the aurora in Stellarium
+
+Two different segmentation methods were tried:
+kmeans
+level sets (jeff orchard)
+
+kmeans seemed to work better (took less time and still gave us what we needed).
 
