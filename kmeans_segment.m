@@ -123,6 +123,7 @@ seg = (pixel_labels == 1);
 %
 
 cut_rgb_image = rgb_IM;
+horizon_image = ones([size(rgb_IM,1) size(rgb_IM,2)]);
 
 first_type = seg(1,1);
 
@@ -133,6 +134,7 @@ for j = 1:ny
 			fill_with_0 = true;
 		end
 		if( fill_with_0 )
+			horizon_image(i,j) = 0;
 			cut_rgb_image(i,j,1) = 0;
 			cut_rgb_image(i,j,2) = 0;
 			cut_rgb_image(i,j,3) = 0;
@@ -140,9 +142,17 @@ for j = 1:ny
 	end
 end
 
-fig5 = figure(5);
-imshow( cut_rgb_image );
-print( fig5, '-djpeg', [file '_kmeans_cut_' '.jpeg']);
+%fig4 = figure(4);
+horizon_image_(:,:,1) = horizon_image;
+horizon_image_(:,:,2) = horizon_image;
+horizon_image_(:,:,3) = horizon_image;
+%imshow( horizon_image_ );
+imwrite( horizon_image_ ,[file '_kmeans_horizon_' '.jpg'], 'jpg');
+
+%fig5 = figure(5);
+%imshow( cut_rgb_image );
+%print( fig5, '-djpeg', [file '_kmeans_cut_' '.jpeg']);
+imwrite( cut_rgb_image ,[file '_kmeans_cut_' '.jpg'], 'jpg');
 
 
 first_type = pixel_labels(1,1);
@@ -174,8 +184,12 @@ for i = ceil(2*nx/3):nx
 	end
 end
 
-fig8 = figure(8)
-imshow(aurora)
-print( fig8, '-djpeg', [file '_kmeans_aurora_' '.jpeg']);
+%fig8 = figure(8)
+aurora_(:,:,1) = aurora;
+aurora_(:,:,2) = aurora;
+aurora_(:,:,3) = aurora;
+%imshow(aurora_)
+%print( fig8, '-djpeg', [file '_kmeans_aurora_' '.jpeg']);
+imwrite( aurora_ ,[file '_kmeans_aurora_' '.jpg'], 'jpg');
 
 end
