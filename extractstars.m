@@ -1,10 +1,11 @@
 %
-% Input: A file name to read.
+% Input: img_name: A file name to read.
+%        value: the value for the star to have.
 % Output: A greyscale image with only points which are
 % brighter than the surrounding background (i.e. the bright stars).
 % The values are the difference between the point average and the
 % background. 
-function [ stars ] = extractstars( img_name )
+function [ stars ] = extractstars( img_name, value )
 
     img = double(imread(img_name));
 
@@ -37,10 +38,11 @@ function [ stars ] = extractstars( img_name )
     for i = 11:(nx-11)
         for j = 11:(ny-11)
             if (mean33(i,j) > (mean99(i,j)+thress)) && (mean33(i,j+1) > (mean99(i,j+1)+thress)) && (mean33(i+1,j) > (mean99(i+1,j)+thress))
-                stars(i,j) = mean33(i,j)-mean99(i,j);
+                stars(i,j) = value;
             end
         end
     end
 
 end
+
 
