@@ -1,0 +1,124 @@
+
+\documentclass[12pt]{article}
+\usepackage{amsfonts,amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{epsfig}
+\usepackage{verbatim}
+\usepackage[small,it]{caption}
+\usepackage[margin=1.0in]{geometry}
+
+
+\newlength{\mylength}
+\setlength{\mylength}{\textwidth}
+\addtolength{\mylength}{-2\fboxsep}
+\newcommand{\one}{\mathbb{1}}
+\newcommand{\ket}[1]{| #1 \rangle}
+\newcommand{\bra}[1]{\langle #1 |}
+\newcommand{\braket}[2]{\langle #1 | #2 \rangle}
+\newcommand{\ketbra}[2]{| #1 \rangle\langle #2 |}
+\newcommand{\half}{{\mbox{$\frac{1}{2}$}}}
+\newcommand{\halfsqrt}{\frac{1}{\sqrt{2}}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\bar}[1]{\overline{#1}}
+\renewcommand{\N}{\mathbb{N}}
+\newcommand{\hil}{\mathcal{H}}
+\renewcommand{\implies}{\Longrightarrow\hspace{5mm}}
+\renewcommand{\iff}{\hspace{5mm}\Longleftrightarrow\hspace{5mm}}
+\newcommand{\psibar}{\bar{\psi}}
+\newcommand{\nin}{\not\in}
+\renewcommand{\perp}{\bot}
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\sfrac}[2]{\textstyle{\frac{#1}{#2}}}
+\renewcommand{\mod}{\hspace{1mm}\textnormal{mod}\hspace{1mm}}
+\renewcommand{\Pr}{\text{Pr}}
+\newcommand{\ancilla}{\begin{small}\text{anc}\end{small}}
+
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\title{Aligning the Stars - Aurora Localization via Star-Trails}
+\author{ Laura Culp, Fangda Li, Andre Recnik \\
+}
+
+\begin{document}
+
+\maketitle
+
+\break 
+%\begin{abstract}
+%\end{abstract}
+
+\setcounter{equation}{0} \setcounter{section}{0}
+
+\section{\bf Introduction }
+
+
+\section{ \bf Determining Camera Orientation }
+
+\subsection{ \bf Star Matching via Least Squares }
+
+\subsection{ \bf Tracking Velocity of Earth }
+
+\subsection{ \bf Star-Trails }
+
+
+\section{\bf Computational Method Outline }
+
+A brief description of the method that was used to determine the orientation of the camera relative to the International Space Station, which stays constant for an entire video sequence, is as follows:
+\begin{enumerate}
+\item Segment images into 'earth' and 'sky' using k-means
+\item Extract the brightest stars from each frame
+\item Stack extracted stars to form star-trails
+\item Calculate the length of each star-trail and convert to velocity data
+\item Determine the angular offset of the camera from the ISS orbit
+\end{enumerate}
+
+Once the orientation of the camera relative to the International Space Station has been determined, the approximate location of the aurora in each image is placed on a map using the following method:
+\begin{enumerate}
+\item Approximate where the aurora is in the image via segmentation
+\item Calculate the area of the earth visible in the image
+\item Project the approximate location of the aurora onto the earth
+\end{enumerate}
+
+The details of these methods will be explained further below. 
+
+\subsection{ \bf Image Segmentation }
+
+\subsubsection{ \bf k-means }
+
+\subsubsection{ \bf Level Sets }
+
+
+\subsection{ \bf Star-Trail Creation }
+
+\subsection{ \bf Velocity Extraction }
+
+\subsection{ \bf Camera Orientation Calculations }
+
+\subsection{ \bf Projections and Display of Map }
+
+\section{ \bf Conclusion }
+
+\section{ \bf Acknowledgements }
+
+Our team wishes to thank Jeff Orchard for the implementation of Level Sets Segmentation and the wonderful Medical Image Processing course notes, the ISS Crew for the beautiful pictures, and the Toronto SpaceApps Team for organizing the Toronto Nasa SpaceApps Challenge.
+
+%\begin{thebibliography}{9}
+%\bibliographystyle{alpha}
+
+%\bibitem[1]{1} J Orchard \emph{Concentrating Partial Entanglement by Local Operations}. quant-ph/9511030v1
+
+%\bibitem[BBPSSW08]{BBPSSW08} C.H. Bennett, G. Brassard, S. Popescu, B. Schumacher, J.A. Smolin, W.K. Wooters \emph{Purification of Noisy Entanglement and Faithful Teleportation via Noisy Channels}. quant-ph/9511027v2
+
+%\bibitem[BDSW08]{BDSW08} C.H. Bennett, D.P. DiVincenzo, J.A. Smolin \emph{Mixed State Entanglement and Quantum Error Correction}. quant-ph/9604024v2
+
+%\end{thebibliography}
+
+\end{document}
