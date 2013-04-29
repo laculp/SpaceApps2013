@@ -50,21 +50,31 @@
 \begin{document}
 
 \maketitle
+ 
+\begin{abstract}
+This is a brief description of the methods and the math behind the methods used and attempted when trying to solve the problem outlined for the NASA SpaceApps Hackathon in Toronto, Ontario.
+\end{abstract}
 
-\break 
-%\begin{abstract}
-%\end{abstract}
+\break
 
 \setcounter{equation}{0} \setcounter{section}{0}
 
 \section{\bf Introduction }
 
+There are many time-lapse picture sequences taken from the International Space Station (ISS) that include auroras.  Here, we attempt to take these videos and extract, for each frame, the location of the aurora on the earth.  The only information given is the location (Nadir point and altitude) of the ISS at the time that each picture was taken. 
 
 \section{ \bf Determining Camera Orientation }
 
+One of the most interesting parts of this problem is the determination of the orientation of the camera.  Given the NADIR point of the ISS and the altitude, we can calculate the circle of possible areas the picture was taken of, where the ISS is at the center.  The problem is that we do not know where in the circle the picture was taken.  If we can determine the angle of the camera relative to the orbit of the ISS, the star patch that we are looking at, or the longitude that is being viewed, we are able to work out the angles. 
+
+There were three methods attempted.  The first method, star matching via least squares, was fully implemented and determined to be too inefficient.  The second method, tracking the velocity of landmarks on the earth to determine longitude, was determined to not be robust while completing a rough trial.  The last method, building star-trails and determining the velocity of the stars and thus the angle of the camera off the orbit of the ISS, worked.  Each method is described briefly below.
+
 \subsection{ \bf Star Matching via Least Squares }
 
+
 \subsection{ \bf Tracking Velocity of Earth }
+
+The matlab script '$match_features.m$' shows one of the methods that was used to track landmarks on the earth.  SURFT, SIFT, FAST, and Harris features were all attempted.  An exhaustive search of the parameter space for these functions was not completed, and so matching features on the earth still could work, but what was seen in the trials that were completed was a lack of correct matching of enough features.  
 
 \subsection{ \bf Star-Trails }
 
@@ -91,20 +101,38 @@ The details of these methods will be explained further below.
 
 \subsection{ \bf Image Segmentation }
 
+In order to avoid incorrect identification of stars in the images, the area in the image belonging to the earth must be separated from the area in the image belonging to the sky.  The location of the aurora itself must also be approximated in the image in order to be able to map it to a location on the earth.  This can be done using a computer vision technique called segmentation.
+
+There are two methods of image segmentation that were attempted: k-means and level sets.  Each method worked, but the k-means algorithm worked more efficiently and was able to provide a segmentation of both the aurora and the earth at the same time.  These methods are briefly described.
+
 \subsubsection{ \bf k-means }
+
+K-means segmentation is a clustering technique which separates the image into a given number, k, of clusters, each centered around a Gaussian distribution.  There is an efficient implementation of this algorithm included in a library in matlab, 'kmeans'.  This implementation was used.
+
+In order to more-accurately identify the clusters, the entire image was scaled down and blurred.  This avoids anomelies being placed in the incorrect clusters.
 
 \subsubsection{ \bf Level Sets }
 
+The level set method tracks an evolving contour line.  The approximate level sets are tracked, and when the slope of the contour line is greater than a given parameter, the current contour line is used to determine a cut in the image.  This only separates the image into two different sections, and can take slightly longer than the k-means algorithm.  In addition, there are multiple parameters that need to be played with and correctly chosen in order to get the desired results.
+
+An implementation of this method given by Jeff Orchard in a Medical Image Processing course at the University of Waterloo was used. 
 
 \subsection{ \bf Star-Trail Creation }
 
+
 \subsection{ \bf Velocity Extraction }
+
 
 \subsection{ \bf Camera Orientation Calculations }
 
+
 \subsection{ \bf Projections and Display of Map }
 
+
+
 \section{ \bf Conclusion }
+
+
 
 \section{ \bf Acknowledgements }
 
