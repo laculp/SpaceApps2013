@@ -128,11 +128,67 @@ An implementation of this method given by Jeff Orchard in a Medical Image Proces
 
 \subsection{ \bf Projections and Display of Map }
 
+At this point we have the orientation of the camera, and the approximated aurora and earth segmentation data.  We now need to calculate the area of the earth visible from the camera, and from that, approximate the aurora location.
 
+\subsubsection{ \bf Earth Visible from Camera }
+
+We know the orbit of the ISS. Let the current position of the ISS be $x$ and the position of the ISS in the next frame be $x'$. We also know the angle of the camera off the axis of the ISS orbit, let it be $\theta$. 
+
+Then, we can approximate the direction of the camera to be
+\begin{center}
+$camera = \left(
+\begin{array}{cc}
+\sin{\theta} & -\cos{\theta} \\
+\cos{\theta} & \sin{\theta}\\
+\end{array}
+\right)
+\frac{(x - x')}{norm((x - x'))}$
+\end{center}
+
+We can also calculate the distance to the horizon from the ISS as follows
+\begin{center}
+$distance to horizon from ISS = \sqrt{(Radius of Earth + ISS Altitude)^2 - (Radius of Earth)^2}$
+\end{center}
+
+and the distance to the horizon point along the ground as
+\begin{center}
+$distance to horizon along earth = arcsin( \frac{(distance to horizon from ISS) * \sin{\frac{\pi}{2}} }{ Radius of Earth + ISS Altitude }$
+\end{center}
+
+Then, since the horizontal field of view of the camera on the ISS is 60 degrees, the leftmost point of the horizon seen from the ISS is calculated to be
+\begin{center}
+$vector to leftmost horizon point = \left(
+\begin{array}{cc}
+\sin{\frac{\pi}{6}} & -\cos{\frac{\pi}{6}} \\
+\cos{\frac{\pi}{6}} & \sin{\frac{\pi}{6}}\\
+\end{array}
+\right)
+(camera)$\\
+$ leftmost horizon point = \frac{distance to horizon along earth}{distance( x, vector to leftmost horizon point + x )} * vector to leftmost horizon point $
+\end{center}
+
+Where distance calculates the distance between two (lat, lon) coordinates in kilometers.
+
+A similar calculation can be done for the rightmost point on the horizon that is seen on the camera.
+
+This includes many approximations, and assumes that the camera is always level with the horizon, but gives a rough guess of the area on the earth that the camera could see.
+
+\subsubsection { \bf Approximate Aurora Location }
+
+We now can project each pixel that is guessed to be the aurora back onto the wedge of the earth that is visible to the camera.
+
+First, we calculate which approximate row in the image is the horizon.  This does not account for any curvature along the horizon, and is an approximation.  It is done by calculating:
+\begin{center}
+$horizon row = \floor{\frac{num of pixels segmented to be the sky}{total num of pixels} * number of rows }$
+\end{center}
+
+Then, given some point in the image, we can project it onto the map by finding the vector pointing the correct direction by looking at the offset of the pixel from the horizontal center and rotating it by a fraction of a degree (the horizontal field of view is 60 degrees).  We can then find the distance to the point on the earth by taking into consideration the offset of the pixel from the horizon and the vertical field of view (45 degrees).  We combine this in a method similar to what is shown above. 
+
+The method '$ll_of_xy_in_image$' implements this.
 
 \section{ \bf Conclusion }
 
-
+Though there are many approximations in this method and many areas that could be made more robust, this method is able to calculate the approximate location of an aurora over the earth in an efficient manner using only a series of time-lapse photos from the ISS and the ISS location when each photo is taken.
 
 \section{ \bf Acknowledgements }
 
