@@ -132,8 +132,10 @@ if FULL == 1
     mesh(x, y, log(z));
     zlim([0 10]);
     zlabel('log(residual)');
-    xlabel('d0');
+    ylabel('d0');
     xlabel('theta');
+    xlim([-90 90]);
+    ylim([0 360]);
     title('Log residuals over d0 and theta (camera rotation and angle off ISS axis)');
 end
 
