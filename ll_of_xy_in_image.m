@@ -3,7 +3,7 @@ function [lat, lon] = ll_of_xy_in_image( ISS_latlon, ISS_alt, direction_of_view,
 
 % Recalculate angle to horizon
 R = earthRadius('kilometers');
-aurora_alt = 350; % We assume the top of the aurora occurs at 250km
+aurora_alt = 300; % We assume the top of the aurora occurs at 250km
 angle_to_horizon = asin( sin(pi/2) * (R + aurora_alt) / (R + 387) );
 
 % Floor the horizon row in the image
@@ -17,17 +17,17 @@ horizon_row_in_image = floor(horizon_row_in_image);
 vertical_fov = 45;
 vertical_fov = deg2rad(vertical_fov);
 
-horizontal_fov = 60;
-horizontal_fov = deg2rad(horizontal_fov)/2;
+horizontal_fov = 65;
+horizontal_fov = deg2rad(horizontal_fov);
 
 vert_fov_per_pixel = vertical_fov / nrows;
 horiz_fov_per_pixel = horizontal_fov / ncols;
 
 % Get percent off horizon (top is at 22.5, bottom at -22.5)
-row_displacement = horizon_row_in_image - row;
+row_displacement = -(horizon_row_in_image - row);
 
 % Get percent off center
-col_displacement = ncols/2 - col;
+col_displacement = (ncols/2 - col);
 
 % FIXME: projective transform needs to be done
 % (We assume an orthographic transformation)
@@ -44,9 +44,11 @@ beta = asin( (aurora_alt + R) * sin( vert_angle ) / ( ISS_alt + R ) ) ;
 dist_to_pt = sin(pi - vert_angle - beta) * ( aurora_alt + R ) / sin( vert_angle );
 
 % Third, rotate the direction of view by the horizontal offset
-ROT = [sin(horiz_angle) -cos(horiz_angle); cos(horiz_angle) sin(horiz_angle)];
+ROT = [cos(horiz_angle) -sin(horiz_angle); sin(horiz_angle) cos(horiz_angle)];
 pt_dir = ROT * direction_of_view;
 pt_dir = pt_dir / norm(pt_dir);
+
+pt_dir = [pt_dir(2); pt_dir(1)];
 
 % Find the length of this vector
 temp = ISS_latlon + pt_dir;

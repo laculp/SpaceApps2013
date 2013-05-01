@@ -1,7 +1,7 @@
-function ret = show_wedge(ISS_latlon, ISS_alt, next_frame, degrees_off_ISS_axis, horizon_segmented_image_name, aurora_segmented_image_name, degrees_off_horizontal)
+function ret = show_wedge(ISS_latlon, ISS_alt, next_frame, degrees_off_ISS_axis, horizon_segmented, aurora_segmented, degrees_off_horizontal)
 
 % ISS_latlon given in [lat; lon] 
-% (altitude in meters)
+% (altitude in kilometers)
 % orbit dir given in [lat; lon] of next frame
 
 tic 
@@ -15,33 +15,36 @@ R = earthRadius('kilometers');
 d_ISS_horiz = sqrt( (R + ISS_alt).^2 - R.^2 );
 % 	then, we can use the sine law to calculate the angle between the horizon and
 %	the ISS
-alpha = asin( d_ISS_horiz * sin(pi/2) / (R + ISS_alt) )
+alpha = asin( d_ISS_horiz * sin(pi/2) / (R + ISS_alt) );
 %	then, get the distance on the earth
-d_horiz = alpha * R
+d_horiz = alpha * R;
 
 % Find a vector representing the direction of the ISS
-ISS_dir(1) = next_frame(1) - ISS_latlon(1);
-ISS_dir(2) = next_frame(2) - ISS_latlon(2);
+ISS_dir(2) = next_frame(1) - ISS_latlon(1);
+ISS_dir(1) = next_frame(2) - ISS_latlon(2);
 
 % Find the unit direction of view
 dpos = [ISS_dir(1); ISS_dir(2)];
 dpos = dpos / norm(dpos);
 
 % Create a rotation matrix for the offset
-ROT = [sin(degrees_off_ISS_axis) -cos(degrees_off_ISS_axis); cos(degrees_off_ISS_axis) sin(degrees_off_ISS_axis)];
+ROT = [cos(degrees_off_ISS_axis) -sin(degrees_off_ISS_axis); sin(degrees_off_ISS_axis) cos(degrees_off_ISS_axis)];
 % Apply rotation matrix to get the approximate viewing direction
 dview = ROT * dpos;
 
 % Find the wedge based on the field of view (in degrees)
-camera_fov = 60;
+camera_fov = 65;
 camera_fov = degtorad(camera_fov);
 % Divide the field of view in half to get how much we should rotate the viewing dir each way
 fov_half = camera_fov/2;
 % Rotate by fov_half to get the left, and -fov_half to get the right
-ROT = [sin(fov_half) -cos(fov_half); cos(fov_half) sin(fov_half)];
+ROT = [cos(fov_half) -sin(fov_half); sin(fov_half) cos(fov_half)];
 dedge_l = ROT * dview;
-ROT = [sin(-fov_half) -cos(-fov_half); cos(-fov_half) sin(-fov_half)];
+ROT = [cos(-fov_half) -sin(-fov_half); sin(-fov_half) cos(-fov_half)];
 dedge_r = ROT * dview;
+
+dedge_l = [dedge_l(2); dedge_l(1)];
+dedge_r = [dedge_r(2); dedge_r(1)];
 
 % Find the points on the horizon at the edges of the field of view
 % We are given the length in meters that we want to go, and the direction
@@ -66,14 +69,11 @@ max_lat = max([ISS_latlon(1) left_top_pt(1) right_top_pt(1)]);
 min_lon = min([ISS_latlon(2) left_top_pt(2) right_top_pt(2)]);
 max_lon = max([ISS_latlon(2) left_top_pt(2) right_top_pt(2)]);
 
-toc
-
-tic
 
 % Set up the projection
 %m_proj( 'oblique', 'lat', [min_lat max_lat], 'lon', [min_lon max_lon], 'aspect', 1 );
 figure
-worldmap( [min_lat max_lat], [min_lon max_lon]);
+worldmap( [(min_lat-5) (max_lat+5)], [(min_lon-5) (max_lon+5)]);
 
 % Plot the contours
 %m_coast('patch', [.6 .6 .6]);
@@ -89,8 +89,7 @@ geoshow('landareas.shp', 'FaceColor', [0.5 0.5 0.5]);
 % view wedge
 plotm([ISS_latlon(1) left_top_pt(1)], [ISS_latlon(2) left_top_pt(2)],'r');
 plotm([ISS_latlon(1) right_top_pt(1)], [ISS_latlon(2) right_top_pt(2)], 'r');
-
-toc
+plotm([ISS_latlon(1) next_frame(1)], [ISS_latlon(2) next_frame(2)], 'b');
 
 % Calculate where the aurora is
 % We know where the aurora is in the image... we can calculate the
@@ -102,10 +101,8 @@ toc
 % out the earth
 % 
 
-tic
-
 % So, read in the segmented image file (should be black and white)
-horizon_IM = double(imread(horizon_segmented_image_name));
+horizon_IM = horizon_segmented;
 
 [nrows, ncols, depth] = size(horizon_IM);
 
@@ -123,35 +120,27 @@ horizon = nrows * white_proportion;
 % Angle to horizon
 angle_to_horizon = pi/2 - alpha;
 
-toc
-
-tic
-
-aurora_IM = double(imread(aurora_segmented_image_name));
+aurora_IM = aurora_segmented;
 aurora_IM = (aurora_IM(:,:,1) == 255);
-nrows 
-ncols
+
 [nrows, ncols, depth] = size(aurora_IM);
-nrows
-ncols
 
-
-toc
-
-tic
 
 % For each black point, we project it onto the image
+pts = [];
 for row = 1:nrows
 	for col = 1:ncols
 		if( aurora_IM(row, col,1) == 1 )
 	%		col
 			[pt_lat pt_lon] = ll_of_xy_in_image( ISS_latlon, ISS_alt, dview, angle_to_horizon, horizon, nrows, ncols, row, col );
-		%	[pt_lat pt_lon]
-			plotm(pt_lat, pt_lon, 'g'); 
+            pts(end+1,:) = [pt_lat pt_lon];
+            %	[pt_lat pt_lon]
+			
 		end
 	end
 end
 
-toc
+plotm(pts, '*', 'Color', 'green'); 
+
 
 end
