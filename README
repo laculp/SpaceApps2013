@@ -31,3 +31,4 @@ kmeans seemed to work better (took less time and still gave us what we needed).
 
 The reverse projection code in step 5 makes a lot of assumptions that result in low quality results, this area of the code need to be improved to use less assumptions and approximations.
 
+The segmentation does not work for all data sets, if it doesn't work on the data set you want to process, try changing the constants in the kmeans part of the code.
