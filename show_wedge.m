@@ -121,7 +121,7 @@ horizon = nrows * white_proportion;
 angle_to_horizon = pi/2 - alpha;
 
 aurora_IM = aurora_segmented;
-aurora_IM = (aurora_IM(:,:,1) == 255);
+aurora_IM = (aurora_IM(:,:,1) == 1);
 
 [nrows, ncols, depth] = size(aurora_IM);
 
@@ -141,6 +141,6 @@ for row = 1:nrows
 end
 
 plotm(pts, '*', 'Color', 'green'); 
-
+title('ISS Camera FOV and approximate aurora location over earth');
 
 end

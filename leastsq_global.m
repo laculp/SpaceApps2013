@@ -3,6 +3,7 @@ classdef leastsq_global < handle
     properties 
         % RA given in degrees, all other angles in radians
         
+        % some defaults
         x0 = 2128
         y0 = 1416
         ISS_period = 93.0 % minutes
@@ -22,13 +23,19 @@ classdef leastsq_global < handle
     
     methods 
         
-        function obj = leastsq_global()
+        % ISS_period in minutes.
+        function obj = leastsq_global(img_size, ISS_period_in, focal_length)
             
            obj.theta_steps = int16(1.0*10.0^2.0);
            obj.d0_steps = int16(0.5*10.0^2.0);
         
            obj.theta_grid = linspace(0,2.0*pi, obj.theta_steps);
            obj.d0_grid = linspace(-pi/2.0, pi/2.0, obj.d0_steps);
+           
+           obj.x0 = img_size(1)/2;
+           obj.y0 = img_size(2)/2;
+           obj.ISS_period = ISS_period_in;
+           obj.f = focal_length;
             
         end
         

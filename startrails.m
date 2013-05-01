@@ -18,7 +18,7 @@ function trails = startrails(path, mission, start_num, frames, img_size, max_row
     % Since we are taking from a data set where each frame
     % is taken at a one second interval, the trails are effectly
     % a 1 minute arc.
-    for i = start_num:(start_num+frames)
+    for i = start_num:(start_num+frames-1)
         % Starting star locations are panted with a value of 1
         % middle star locations are painted with a value of 100
         % and end star locations are painted with a value of 10000
