@@ -91,6 +91,10 @@ function data = extract_lengths(trails, resize_factor, FULL)
 
     data = [];  
 
+    if FULL == 1
+        figure;
+    end
+    
     for c = 1:colour-1
         
         x1 = lengths2(c,1);
@@ -130,6 +134,7 @@ function data = extract_lengths(trails, resize_factor, FULL)
         xlim([0 ny]);
         ylim([0 nx]);
         title('Star trails plotted as lines');
+        hold off;
     end
 
 end
