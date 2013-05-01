@@ -1,16 +1,33 @@
-This is not a unified system yet, instead, there are many small pieces that are used.
+Using images of the aurora taken from the ISS, find location of the aurora over the Earth.
 
-The following steps are to be used:
-1. Segment images to remove earth, filter to get brightest stars, and generate star-trail images from the results
-2. Extract length of star-trails
-3. Calculate direction of camera from the length of the star-trails
-4. Segment original image in order to get the aurora
-5. Calculate where on earth the aurora is above
-6. Show the aurora in Stellarium
+This is done using the following method:
+
+1. Segment (using k-means) to get the ground, sky, and aurora.
+2. Filter resulting images to only get the brightest stars, generate star-trail images from these.
+3. Extract the length and direction of the star trails.
+4. Use the length of the star-trails (star velocity) to find the direction the camera on the ISS is pointing.
+5. Find where on the earth the aurora is above, using inverse projections to find the distance to the aurora, and project this back onto a map.
+
+Running the code:
+
+The main.m is the starting point for running the code.  The following steps need to be taken to run the code:
+
+1. Change the constants at the top of the main.m file to reflect the data set to process (see comments in main.m).
+2. Download a full resolution data set from: http://eol.jsc.nasa.gov/Videos/CrewEarthObservationsVideos/Videos_Aurora.htm   The example data set is: "North Dakota to Central Quebec*", the first 60 frames starting with: ISS030-E-53334.JPG
+3. Run each part of the main file seperatly to see the process, or run the entire file to generate all the graphs and data. 
+
+Requirements and extra libraries:
+
+* Requires MATLAB and the mapping and image processing tool boxes. 
+* Requires the M_MAP library: http://www.eos.ubc.ca/~rich/private/
+
+Notes:
 
 Two different segmentation methods were tried:
-kmeans
-level sets (jeff orchard)
+* kmeans
+* level sets (jeff orchard)
 
 kmeans seemed to work better (took less time and still gave us what we needed).
+
+The reverse projection code in step 5 makes a lot of assumptions that result in low quality results, this area of the code need to be improved to use less assumptions and approximations.
 
